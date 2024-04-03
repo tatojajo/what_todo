@@ -4,9 +4,9 @@ const router = express.Router();
 
 // GET todos
 
-router.get("/", async (req, res) => {
+router.get("/:userId", async (req, res) => {
   try {
-    const todoList = await Todo.find();
+    const todoList = await Todo.find({ user: req.params.userId });
 
     if (!todoList) {
       return res.status(400).send("Todos not found");
@@ -21,11 +21,12 @@ router.get("/", async (req, res) => {
 
 // POST todos
 
-router.post("/", async (req, res) => {
+router.post("/:userId", async (req, res) => {
   try {
     let newTodo = new Todo({
       title: req.body.title,
       description: req.body.description,
+      user: req.params.userId,
     });
 
     newTodo = await newTodo.save();
