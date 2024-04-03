@@ -6,9 +6,12 @@ const users = require("./routers/users");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const authJwt = require("./helpers/jwt");
+const cors = require('cors')
 require("dotenv/config");
 
-// app.use(authJwt());
+app.use(cors());
+app.options("*", cors());
+app.use(authJwt());
 app.use(bodyParser.json());
 app.use("/api/todos", todos);
 app.use("/api/users", users);

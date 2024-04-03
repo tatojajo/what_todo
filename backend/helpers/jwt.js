@@ -5,7 +5,7 @@ function authJwt() {
   return expressjwt({
     secret: secret,
     algorithms: ["HS256"],
-  }).unless({ path: ["api/users/login", "api/users/register"] });
+  }).unless({ path: ["/api/users/login", "/api/users/register"] });
 }
 
 module.exports = authJwt;
