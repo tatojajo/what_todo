@@ -1,18 +1,20 @@
+import { Todo } from "./StoreContext";
+
 export const SAVE_TODOS = "SAVE_TODOS";
 export const DELETE_TODO = "DELETE_TODO";
-export const UPDATE_TODO = "UPDATE_TODO";
+export const EDIT_TODO = "EDIT_TODO";
 
-export const saveTodos = (todos) => ({
+export const saveTodos = (todos: Todo) => ({
   type: SAVE_TODOS,
   todos,
 });
 
-export const deleteItemsFromCart = (todos) => ({
+export const delTodoLocaly = (todoId: string) => ({
   type: DELETE_TODO,
-  todos,
+  todoId,
 });
 
-export const updateTodo = (todos) => ({
-  type: UPDATE_TODO,
-  todos,
+export const editTodo = (todo:Todo) => ({
+  type: EDIT_TODO,
+  todo,
 });
