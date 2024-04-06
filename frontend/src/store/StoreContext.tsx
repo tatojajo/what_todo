@@ -1,12 +1,7 @@
-import React, {
-  createContext,
-  useContext,
-  useReducer,
-  ReactNode,
-} from "react";
+import React, { createContext, useContext, useReducer, ReactNode } from "react";
 import { reducer } from "./reducer";
 
-export const StoreContext = createContext(null);
+export const StoreContext = createContext<Store | null>(null);
 
 export const useStore = () => useContext(StoreContext);
 
@@ -18,10 +13,22 @@ const initialState = {
   todos: [],
 };
 
+type Todo = {
+  id: string;
+  title: string;
+  description: string;
+  completed: boolean;
+};
+
+type Store = {
+  todos: Todo[];
+  dispatch: React.Dispatch<any>;
+};
+
 const StoreProvider: React.FC<Props> = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const store = {
+  const store: Store = {
     ...state,
     dispatch,
   };

@@ -17,18 +17,15 @@ app.use("/api/todos", todos);
 app.use("/api/users", users);
 
 // Database connection
-mongoose
-  .connect(process.env.CONNECTION_STRING, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    dbName: "todo",
-  })
-  .then(() => {
-    console.log("connected");
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+mongoose.connect(process.env.CONNECTION_STRING, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  dbName: "todo",
+}).then(() => {
+  console.log("Connected to MongoDB");
+}).catch((err) => {
+  console.error("Error connecting to MongoDB:", err);
+});
 
 app.listen(port, () => {
   console.log(`Server is listening on http://localhost:${port}`);

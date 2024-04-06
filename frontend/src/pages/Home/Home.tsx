@@ -10,6 +10,7 @@ import {
   ListItemText,
   ListItemButton,
   Paper,
+  Divider,
 } from "@mui/material";
 import Header from "../../components/Header";
 import Input from "../../components/Input";
@@ -21,9 +22,12 @@ import { saveTodos } from "../../store/actions";
 type Props = {};
 
 export default function Home({}: Props) {
-  const { dispatch, todos } = useStore();
+  const store = useStore();
+  const dispatch = store!.dispatch;
+  const todos = store!.todos;
   const user = isUserAuthenticated();
   const token = localStorage.getItem("token");
+
   useEffect(() => {
     try {
       if (!user) {
@@ -44,14 +48,14 @@ export default function Home({}: Props) {
           `/todos/${user?.userId}`,
           userToken
         );
-        dispatch(saveTodos(data))
+        dispatch(saveTodos(data));
       };
       getTodos();
     } catch (error) {
       console.log(error);
     }
-  }, []);
-  console.log(todos);
+  }, [token, dispatch]);
+
   return (
     <div>
       <Header />
@@ -60,28 +64,42 @@ export default function Home({}: Props) {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
+          flexDirection: "column",
           marginTop: "20px",
+          width: "100%",
         }}
       >
         <Input />
 
         <Box
           sx={{
+            width: "100%",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
           }}
         >
-          <Paper>
-            <Box>
-              <Box />
-            </Box>
-            <List>
+          <Paper
+            sx={{
+              width: "90%",
+              marginTop: "10px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <List sx={{ width: "90%" }}>
               {todos.map((todo) => {
-                console.log(todo)
                 return (
-                  <ListItem key={todo.id}>
+                  <ListItem
+                    key={todo.id}
+                    sx={{
+                      margin: "10px",
+                      border: "solid green",
+                      borderRadius: "10px",
+                    }}
+                  >
                     <ListItemText
                       style={{
                         textDecoration: todo.completed
@@ -91,13 +109,27 @@ export default function Home({}: Props) {
                     >
                       {todo.title}
                     </ListItemText>
-                    <Box>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
                       <ListItemButton>
                         <Delete />
                       </ListItemButton>
+                      <Divider
+                        sx={{ height: 28, m: 0.5 }}
+                        orientation="vertical"
+                      />
                       <ListItemButton>
                         <Edit />
                       </ListItemButton>
+                      <Divider
+                        sx={{ height: 28, m: 0.5 }}
+                        orientation="vertical"
+                      />
                       <ListItemButton>
                         <DoneTwoTone />
                       </ListItemButton>
