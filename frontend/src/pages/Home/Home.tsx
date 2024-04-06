@@ -14,19 +14,48 @@ import {
 } from "@mui/material";
 import Header from "../../components/Header";
 import Input from "../../components/Input";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import axiosInstance from "../../helpers/axiosInstance";
 import { isUserAuthenticated } from "../../helpers/auth";
-import { saveTodos } from "../../store/actions";
+import { delTodoLocaly, saveTodos } from "../../store/actions";
+import toast from "react-hot-toast";
+import EditTodo from "../../components/Edit/EditTodo";
 
 type Props = {};
 
 export default function Home({}: Props) {
+  const [openDilaog, setOpenDilaog] = useState(false);
   const store = useStore();
   const dispatch = store!.dispatch;
   const todos = store!.todos;
   const user = isUserAuthenticated();
   const token = localStorage.getItem("token");
+
+  const deleteTodo = async (todoId: string) => {
+    try {
+      if (!user) {
+        console.log("User is not available");
+        return;
+      }
+      if (!token) {
+        console.log("Authentication token is missing");
+        return;
+      }
+      const userToken = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      const delTodo = await axiosInstance.delete(`todos/${todoId}`, userToken);
+      if (delTodo) {
+        dispatch(delTodoLocaly(todoId));
+        toast.error("Task successfully Deleted!");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     try {
@@ -116,7 +145,7 @@ export default function Home({}: Props) {
                         justifyContent: "center",
                       }}
                     >
-                      <ListItemButton>
+                      <ListItemButton onClick={() => deleteTodo(todo.id)}>
                         <Delete />
                       </ListItemButton>
                       <Divider
@@ -124,7 +153,11 @@ export default function Home({}: Props) {
                         orientation="vertical"
                       />
                       <ListItemButton>
-                        <Edit />
+                        <EditTodo
+                          open={openDilaog}
+                          setOpen={setOpenDilaog}
+                          todo={todo}
+                        />
                       </ListItemButton>
                       <Divider
                         sx={{ height: 28, m: 0.5 }}

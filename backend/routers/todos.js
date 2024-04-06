@@ -1,12 +1,15 @@
 const express = require("express");
 const { Todo } = require("../models/todos");
+const { default: mongoose } = require("mongoose");
 const router = express.Router();
 
 // GET todos
 
 router.get("/:userId", async (req, res) => {
   try {
-    const todoList = await Todo.find({ user: req.params.userId });
+    const todoList = await Todo.find({ user: req.params.userId }).sort({
+      createdAt: -1,
+    });
 
     if (!todoList) {
       return res.status(400).send("Todos not found");
@@ -45,6 +48,9 @@ router.post("/:userId", async (req, res) => {
 
 router.delete("/:id", async (req, res) => {
   try {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(400).send("Invalid todo Id");
+    }
     const todo = await Todo.findByIdAndDelete({ _id: req.params.id });
     if (!todo)
       return res
@@ -59,8 +65,24 @@ router.delete("/:id", async (req, res) => {
 
 // PUT todos
 
-router.put("/:id", (req, res) => {
-  res.status(200).json({ message: "PUT" });
+router.put("/:id", async (req, res) => {
+  try {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(400).send("Invalid todo Id");
+    }
+    const todo = await Todo.findByIdAndUpdate(
+      req.params.id,
+      { title: req.body.title },
+      { new: true }
+    );
+
+    if (!todo) {
+      return res.status(400).send("Todo cannot be updated");
+    }
+    res.status(201).send(todo);
+  } catch (error) {
+    return res.status(400).json({ success: false, error: error.message });
+  }
 });
 
 module.exports = router;

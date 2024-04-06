@@ -5,15 +5,7 @@ export const StoreContext = createContext<Store | null>(null);
 
 export const useStore = () => useContext(StoreContext);
 
-type Props = {
-  children: ReactNode;
-};
-
-const initialState = {
-  todos: [],
-};
-
-type Todo = {
+export type Todo = {
   id: string;
   title: string;
   description: string;
@@ -23,6 +15,18 @@ type Todo = {
 type Store = {
   todos: Todo[];
   dispatch: React.Dispatch<any>;
+};
+
+export type State = {
+  todos: Todo[];
+};
+
+type Props = {
+  children: ReactNode;
+};
+
+const initialState: State = {
+  todos: [],
 };
 
 const StoreProvider: React.FC<Props> = ({ children }) => {
