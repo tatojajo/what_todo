@@ -34,7 +34,10 @@ const Input = () => {
         { title: debounceValue },
         userToken
       );
-      toast.success("Task successfully added!");
+      if (todo) {
+        toast.success("Task successfully added!");
+      }
+      window.location.reload()
     } catch (error) {
       console.log(error);
     }

@@ -4,15 +4,15 @@ export const UPDATE_TODO = "UPDATE_TODO";
 
 export const saveTodos = (todos) => ({
   type: SAVE_TODOS,
-  payload: todos,
+  todos,
 });
 
-export const deleteItemsFromCart = (todo) => ({
+export const deleteItemsFromCart = (todos) => ({
   type: DELETE_TODO,
-  payload: todo,
+  todos,
 });
 
-export const updateTodo = (todo) => ({
+export const updateTodo = (todos) => ({
   type: UPDATE_TODO,
-  payload: todo,
+  todos,
 });
