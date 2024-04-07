@@ -17,7 +17,6 @@ import { useFormik } from "formik";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Snackbar, Alert } from "@mui/material";
-import axios from "axios";
 import axiosInstance from "../../helpers/axiosInstance";
 
 const theme = createTheme();
@@ -71,7 +70,7 @@ export default function Login() {
       navigate("/Home");
     },
   });
-  console.log(errors);
+
 
   return (
     <ThemeProvider theme={theme}>
@@ -159,7 +158,7 @@ export default function Login() {
                   </Link>
                 </Grid>
                 <Grid item>
-                  <Link href="#" variant="body2">
+                  <Link href='/register' variant="body2">
                     {"Don't have an account? Sign Up"}
                   </Link>
                 </Grid>

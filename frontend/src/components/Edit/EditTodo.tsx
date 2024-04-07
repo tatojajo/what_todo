@@ -1,12 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
-import Dialog, { DialogProps } from "@mui/material/Dialog";
+import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
-import { Edit } from "@mui/icons-material";
+
 import { Todo, useStore } from "../../store/StoreContext";
 import { TextField } from "@mui/material";
 import useDebounce from "../../helpers/useDebounce";
@@ -14,15 +14,16 @@ import { isUserAuthenticated } from "../../helpers/auth";
 import axiosInstance from "../../helpers/axiosInstance";
 import { editTodo } from "../../store/actions";
 import toast from "react-hot-toast";
+import { AxiosError } from "axios";
 
 type Props = {
-  todo: Todo;
+  todo: Todo | null;
   open: boolean;
   setOpen: (isOpen: boolean) => void;
 };
 
 export default function EditTodo({ todo, open, setOpen }: Props) {
-  const [todoText, setTodoText] = useState(todo.title);
+  const [todoText, setTodoText] = useState<string>(todo?.title ?? "");
   const debounceValue = useDebounce(todoText, 500);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
@@ -30,7 +31,12 @@ export default function EditTodo({ todo, open, setOpen }: Props) {
   const token = localStorage.getItem("token");
   const store = useStore();
   const dispatch = store!.dispatch;
-  const todos = store!.todos;
+
+  useEffect(() => {
+    if (todo) {
+      setTodoText(todo.title);
+    }
+  }, [todo?.id]);
 
   const updateTodo = async () => {
     try {
@@ -49,7 +55,7 @@ export default function EditTodo({ todo, open, setOpen }: Props) {
       };
 
       const updatedTodo = await axiosInstance.put(
-        `todos/${todo.id}`,
+        `todos/${todo?.id}`,
         { title: debounceValue },
         userToken
       );
@@ -61,25 +67,19 @@ export default function EditTodo({ todo, open, setOpen }: Props) {
         handleClose();
       }
       setTodoText("");
-    } catch (error) {
+    } catch (error: AxiosError | any) {
       console.error("Error updating todo:", error.message);
       toast.error("Failed to update task. Please try again later.");
     }
   };
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
   const handleClose = () => {
     setOpen(false);
+    setTodoText("");
   };
 
   return (
     <>
-      <Button variant="outlined" onClick={handleClickOpen}>
-        <Edit />
-      </Button>
       <Dialog
         fullScreen={fullScreen}
         open={open}
@@ -97,7 +97,7 @@ export default function EditTodo({ todo, open, setOpen }: Props) {
             label="Todo"
             type="text"
             fullWidth
-            defaultValue={todoText}
+            value={todoText || ""}
             onChange={(e) => setTodoText(e.target.value)}
           />
         </DialogContent>
