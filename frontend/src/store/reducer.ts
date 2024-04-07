@@ -1,4 +1,10 @@
-import { DELETE_TODO, EDIT_TODO, SAVE_TODOS } from "./actions";
+import {
+  COMPLETE_TODO,
+  DELETE_TODO,
+  EDIT_TODO,
+  SAVE_TODOS,
+  UNDONE_TODO,
+} from "./actions";
 import { State } from "./StoreContext";
 
 export function reducer(state: State, action: any) {
@@ -22,6 +28,29 @@ export function reducer(state: State, action: any) {
       });
       return { ...state, todos: updatedTodos };
     }
+    case COMPLETE_TODO: {
+      const todos = state.todos;
+      const completeTodo = todos.map((todo) => {
+        if (todo.id == action.todoId) {
+          return { ...todo, completed: !todo.completed };
+        }
+        return todo;
+      });
+      console.log(todos);
+      return { ...state, todos: completeTodo };
+    }
+    case UNDONE_TODO: {
+      const todos = state.todos;
+      const unCompleteTodo = todos.map((todo) => {
+        if (todo.id == action.todoId) {
+          return { ...todo, completed: !todo.completed };
+        }
+        return todo;
+      });
+      console.log(todos);
+      return { ...state, todos: unCompleteTodo };
+    }
+
     default: {
       return state;
     }

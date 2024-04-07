@@ -1,61 +1,34 @@
-import { useStore } from "../../store/StoreContext";
-import { DoneAll, Delete, Edit, DoneTwoTone } from "@mui/icons-material";
+import { Todo, useStore } from "../../store/StoreContext";
+import { Delete, Edit, DoneTwoTone, RemoveDone } from "@mui/icons-material";
 import {
   Box,
-  Typography,
   List,
-  TextField,
-  Button,
   ListItem,
   ListItemText,
   ListItemButton,
   Paper,
   Divider,
+  IconButton,
 } from "@mui/material";
 import Header from "../../components/Header";
 import Input from "../../components/Input";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../helpers/axiosInstance";
 import { isUserAuthenticated } from "../../helpers/auth";
-import { delTodoLocaly, saveTodos } from "../../store/actions";
-import toast from "react-hot-toast";
+import { saveTodos } from "../../store/actions";
 import EditTodo from "../../components/Edit/EditTodo";
+import { deleteTodo, completeTodo, inCompleteTodo } from "../../helpers/api";
 
 type Props = {};
 
 export default function Home({}: Props) {
   const [openDilaog, setOpenDilaog] = useState(false);
+  const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null);
   const store = useStore();
   const dispatch = store!.dispatch;
   const todos = store!.todos;
   const user = isUserAuthenticated();
   const token = localStorage.getItem("token");
-
-  const deleteTodo = async (todoId: string) => {
-    try {
-      if (!user) {
-        console.log("User is not available");
-        return;
-      }
-      if (!token) {
-        console.log("Authentication token is missing");
-        return;
-      }
-      const userToken = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
-
-      const delTodo = await axiosInstance.delete(`todos/${todoId}`, userToken);
-      if (delTodo) {
-        dispatch(delTodoLocaly(todoId));
-        toast.error("Task successfully Deleted!");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   useEffect(() => {
     try {
@@ -81,9 +54,9 @@ export default function Home({}: Props) {
       };
       getTodos();
     } catch (error) {
-      console.log(error);
+      console.error("Error fetching todos:", error);
     }
-  }, [token, dispatch]);
+  }, [token]);
 
   return (
     <div>
@@ -145,33 +118,51 @@ export default function Home({}: Props) {
                         justifyContent: "center",
                       }}
                     >
-                      <ListItemButton onClick={() => deleteTodo(todo.id)}>
-                        <Delete />
+                      <ListItemButton
+                        onClick={() => deleteTodo(todo.id, dispatch)}
+                      >
+                        <Delete color="error" />
                       </ListItemButton>
                       <Divider
                         sx={{ height: 28, m: 0.5 }}
                         orientation="vertical"
                       />
-                      <ListItemButton>
-                        <EditTodo
-                          open={openDilaog}
-                          setOpen={setOpenDilaog}
-                          todo={todo}
-                        />
-                      </ListItemButton>
+                      <IconButton
+                        onClick={() => {
+                          setSelectedTodo(todo), setOpenDilaog(true);
+                        }}
+                      >
+                        <Edit />
+                      </IconButton>
+
                       <Divider
-                        sx={{ height: 28, m: 0.5 }}
+                        sx={{ height: 28, m: 0.9 }}
                         orientation="vertical"
                       />
-                      <ListItemButton>
-                        <DoneTwoTone />
-                      </ListItemButton>
+                      {todo.completed ? (
+                        <ListItemButton
+                          onClick={() => inCompleteTodo(todo, dispatch)}
+                        >
+                          <RemoveDone color="error" />
+                        </ListItemButton>
+                      ) : (
+                        <ListItemButton
+                          onClick={() => completeTodo(todo, dispatch)}
+                        >
+                          <DoneTwoTone color="warning" />
+                        </ListItemButton>
+                      )}
                     </Box>
                   </ListItem>
                 );
               })}
             </List>
           </Paper>
+          <EditTodo
+            open={openDilaog}
+            setOpen={setOpenDilaog}
+            todo={selectedTodo}
+          />
         </Box>
       </main>
     </div>

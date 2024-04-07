@@ -72,7 +72,7 @@ router.put("/:id", async (req, res) => {
     }
     const todo = await Todo.findByIdAndUpdate(
       req.params.id,
-      { title: req.body.title },
+      { title: req.body.title, completed: req.body.completed },
       { new: true }
     );
 
