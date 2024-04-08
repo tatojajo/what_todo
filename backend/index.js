@@ -16,10 +16,10 @@ app.get("/", (req, res) => {
 });
 app.use(cors());
 app.options("*", cors());
-app.use(authJwt());
 app.use(bodyParser.json());
-app.use("/api/todos", todos);
 app.use("/api/users", users);
+app.use(authJwt());
+app.use("/api/todos", todos);
 
 // Database connection
 mongoose
