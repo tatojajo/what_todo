@@ -8,7 +8,6 @@ import {
   ListItemButton,
   Paper,
   Divider,
-  IconButton,
   Badge,
 } from "@mui/material";
 import Header from "../../components/Header";
