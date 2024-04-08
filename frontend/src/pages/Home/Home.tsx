@@ -9,6 +9,7 @@ import {
   Paper,
   Divider,
   IconButton,
+  Badge,
 } from "@mui/material";
 import Header from "../../components/Header";
 import Input from "../../components/Input";
@@ -91,72 +92,91 @@ export default function Home({}: Props) {
               justifyContent: "center",
             }}
           >
-            <List sx={{ width: "90%" }}>
-              {todos.map((todo) => {
-                return (
-                  <ListItem
-                    key={todo.id}
-                    sx={{
-                      margin: "10px",
-                      border: "solid green",
-                      borderRadius: "10px",
-                    }}
-                  >
-                    <ListItemText
-                      style={{
-                        textDecoration: todo.completed
-                          ? "line-through"
-                          : undefined,
+            {todos.length === 0 ? (
+              <div style={{ padding: "20px" }}>You haven't got any todos.</div>
+            ) : (
+              <List sx={{ width: "90%" }}>
+                {todos.map((todo, index) => {
+                  return (
+                    <Badge
+                      key={todo.id}
+                      sx={{ width: "100%" }}
+                      badgeContent={index + 1}
+                      anchorOrigin={{
+                        vertical: "top",
+                        horizontal: "left",
                       }}
+                      color={todo.completed ? "success" : "warning"}
                     >
-                      {todo.title}
-                    </ListItemText>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <ListItemButton
-                        onClick={() => deleteTodo(todo.id, dispatch)}
-                      >
-                        <Delete color="error" />
-                      </ListItemButton>
-                      <Divider
-                        sx={{ height: 28, m: 0.5 }}
-                        orientation="vertical"
-                      />
-                      <IconButton
-                        onClick={() => {
-                          setSelectedTodo(todo), setOpenDilaog(true);
+                      <ListItem
+                        sx={{
+                          margin: "10px",
+                          border: "solid green",
+                          borderRadius: { xs: "5px", sm: "10px" },
+                          display: "flex",
+                          flexDirection: {
+                            md: "row",
+                            xs: "column",
+                          },
                         }}
                       >
-                        <Edit />
-                      </IconButton>
+                        <ListItemText
+                          style={{
+                            textDecoration: todo.completed
+                              ? "line-through"
+                              : undefined,
+                          }}
+                        >
+                          {todo.title}
+                        </ListItemText>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <ListItemButton
+                            onClick={() => deleteTodo(todo.id, dispatch)}
+                          >
+                            <Delete color="error" />
+                          </ListItemButton>
+                          <Divider
+                            sx={{ height: 28, m: 0.5 }}
+                            orientation="vertical"
+                          />
+                          <ListItemButton
+                            onClick={() => {
+                              setSelectedTodo(todo), setOpenDilaog(true);
+                            }}
+                          >
+                            <Edit />
+                          </ListItemButton>
 
-                      <Divider
-                        sx={{ height: 28, m: 0.9 }}
-                        orientation="vertical"
-                      />
-                      {todo.completed ? (
-                        <ListItemButton
-                          onClick={() => inCompleteTodo(todo, dispatch)}
-                        >
-                          <RemoveDone color="error" />
-                        </ListItemButton>
-                      ) : (
-                        <ListItemButton
-                          onClick={() => completeTodo(todo, dispatch)}
-                        >
-                          <DoneTwoTone color="warning" />
-                        </ListItemButton>
-                      )}
-                    </Box>
-                  </ListItem>
-                );
-              })}
-            </List>
+                          <Divider
+                            sx={{ height: 28, m: 0.9 }}
+                            orientation="vertical"
+                          />
+                          {todo.completed ? (
+                            <ListItemButton
+                              onClick={() => inCompleteTodo(todo, dispatch)}
+                            >
+                              <RemoveDone color="error" />
+                            </ListItemButton>
+                          ) : (
+                            <ListItemButton
+                              onClick={() => completeTodo(todo, dispatch)}
+                            >
+                              <DoneTwoTone color="warning" />
+                            </ListItemButton>
+                          )}
+                        </Box>
+                      </ListItem>
+                    </Badge>
+                  );
+                })}
+              </List>
+            )}
           </Paper>
           <EditTodo
             open={openDilaog}

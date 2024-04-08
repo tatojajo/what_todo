@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Divider, IconButton, InputBase, Paper } from "@mui/material";
-import { Add } from "@mui/icons-material";
 import useDebounce from "../../helpers/useDebounce";
 import axiosInstance from "../../helpers/axiosInstance";
 import { isUserAuthenticated } from "../../helpers/auth";
+import AddTaskIcon from "@mui/icons-material/AddTask";
 import toast from "react-hot-toast";
 
 const Input = () => {
@@ -37,7 +37,7 @@ const Input = () => {
       if (todo) {
         toast.success("Task successfully added!");
       }
-      window.location.reload()
+      window.location.reload();
     } catch (error) {
       console.log(error);
     }
@@ -46,7 +46,15 @@ const Input = () => {
   return (
     <Paper
       component="form"
-      sx={{ p: "2px 4px", display: "flex", alignItems: "center", width: 400 }}
+      sx={{
+        p: "2px 4px",
+        display: "flex",
+        alignItems: "center",
+        width: {
+          xs: "90%",
+          sm: 400,
+        },
+      }}
     >
       <InputBase
         sx={{ ml: 1, flex: 1 }}
@@ -61,7 +69,7 @@ const Input = () => {
         aria-label="search"
         onClick={createNewTodo}
       >
-        <Add color="success" fontSize="large" />
+        <AddTaskIcon color="success" fontSize="medium" />
       </IconButton>
     </Paper>
   );
