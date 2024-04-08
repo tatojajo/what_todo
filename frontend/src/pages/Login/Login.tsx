@@ -1,4 +1,3 @@
-import * as React from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -18,6 +17,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Snackbar, Alert } from "@mui/material";
 import axiosInstance from "../../helpers/axiosInstance";
+import { AxiosError } from "axios";
 
 const theme = createTheme();
 
@@ -55,22 +55,13 @@ export default function Login() {
           setIsSnackbarOpen(true);
           return;
         }
-      } catch (error) {
-        console.log(error);
+      } catch (error: AxiosError | any) {
+        console.error("Error login user:", error?.message);
+        throw new Error("Failed to login user. Please try again later.");
       }
-
-      const now = new Date();
-
-      const twentyFourHoursFromNow = new Date(
-        now.getTime() + 24 * 60 * 60 * 1000
-      );
-
-      const timestamp = twentyFourHoursFromNow.toISOString();
-      localStorage.setItem("timestamp", timestamp);
       navigate("/Home");
     },
   });
-
 
   return (
     <ThemeProvider theme={theme}>
@@ -126,6 +117,7 @@ export default function Login() {
                 name="email"
                 autoComplete="email"
                 autoFocus
+                helperText={errors.email}
               />
               <TextField
                 margin="normal"
@@ -138,6 +130,7 @@ export default function Login() {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                helperText={errors.password}
               />
               <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
@@ -153,12 +146,12 @@ export default function Login() {
               </Button>
               <Grid container>
                 <Grid item xs>
-                  <Link href="#" variant="body2">
+                  {/* <Link href="#" variant="body2">
                     Forgot password?
-                  </Link>
+                  </Link> */}
                 </Grid>
                 <Grid item>
-                  <Link href='/register' variant="body2">
+                  <Link href="/register" variant="body2">
                     {"Don't have an account? Sign Up"}
                   </Link>
                 </Grid>

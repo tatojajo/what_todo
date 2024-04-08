@@ -1,10 +1,8 @@
-import * as React from "react";
+import * as yup from "yup";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -12,18 +10,56 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { useFormik } from "formik";
+import axiosInstance from "../../helpers/axiosInstance";
+import { useNavigate } from "react-router-dom";
+import { AxiosError } from "axios";
 
 const defaultTheme = createTheme();
 
+interface RegisterFormData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+}
+
+const initialValues: RegisterFormData = {
+  firstName: "",
+  lastName: "",
+  email: "",
+  password: "",
+};
+
+const validationSchema = yup.object().shape({
+  firstName: yup.string().required("FirstName is required"),
+  lastName: yup.string().required("LastName is required"),
+  email: yup.string().email("Invalid email").required("Email is required"),
+  password: yup.string().required("Password is required"),
+});
+
 export default function Register() {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
-  };
+  const navigate = useNavigate();
+  const { values, handleSubmit, handleChange, errors } = useFormik({
+    initialValues,
+    validationSchema,
+    onSubmit: async (values: RegisterFormData) => {
+      try {
+        const { data } = await axiosInstance.post("/users/register", values);
+        if (data) {
+          const { data } = await axiosInstance.post("/users/login", {
+            email: values.email,
+            password: values.password,
+          });
+          localStorage.setItem("token", data.token);
+          navigate("/home");
+        }
+      } catch (error: AxiosError | any) {
+        console.error("Error registering user:", error?.message);
+        throw new Error("Failed to register user. Please try again later.");
+      }
+    },
+  });
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -52,44 +88,50 @@ export default function Register() {
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
-                  autoComplete="given-name"
                   name="firstName"
-                  required
                   fullWidth
                   id="firstName"
                   label="First Name"
-                  autoFocus
+                  value={values.firstName}
+                  onChange={handleChange}
+                  error={!!errors.firstName}
+                  helperText={errors.firstName}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
-                  required
+                  name="lastName"
                   fullWidth
                   id="lastName"
                   label="Last Name"
-                  name="lastName"
-                  autoComplete="family-name"
+                  value={values.lastName}
+                  onChange={handleChange}
+                  error={!!errors.lastName}
+                  helperText={errors.lastName}
                 />
               </Grid>
               <Grid item xs={12}>
                 <TextField
-                  required
+                  name="email"
                   fullWidth
                   id="email"
-                  label="Email Address"
-                  name="email"
-                  autoComplete="email"
+                  label="mail"
+                  value={values.email}
+                  onChange={handleChange}
+                  error={!!errors.email}
+                  helperText={errors.email}
                 />
               </Grid>
               <Grid item xs={12}>
                 <TextField
-                  required
-                  fullWidth
-                  name="password"
-                  label="Password"
                   type="password"
-                  id="password"
-                  autoComplete="new-password"
+                  name="password"
+                  fullWidth
+                  label="Password"
+                  value={values.password}
+                  onChange={handleChange}
+                  error={!!errors.password}
+                  helperText={errors.password}
                 />
               </Grid>
             </Grid>
