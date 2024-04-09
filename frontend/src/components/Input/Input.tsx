@@ -30,7 +30,7 @@ const Input = () => {
       };
 
       const todo = await axiosInstance.post(
-        `/todos/${user.userId}`,
+        `/todos/${user.user.userId}`,
         { title: debounceValue },
         userToken
       );

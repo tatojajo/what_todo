@@ -12,12 +12,18 @@ export type User = {
 export const isUserAuthenticated = () => {
   const token: string | null = localStorage.getItem("token");
 
-  if (token) {
-    const user: User = jwtDecode(token);
-    if (Date.now() / 1000 > user.exp) {
-      localStorage.removeItem("token");
-      return false;
-    }
-    return user;
+  if (!token) {
+    return null;
   }
+
+  const user: User = jwtDecode(token);
+
+  if (Date.now() / 1000 > user.exp) {
+    localStorage.removeItem("token");
+    return null;
+  }
+  if (user.email) {
+    return { user: user, isAuth: true };
+  }
+  return null;
 };

@@ -14,6 +14,8 @@ import { useFormik } from "formik";
 import axiosInstance from "../../helpers/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
+import { useState } from "react";
+import toast from "react-hot-toast";
 
 const defaultTheme = createTheme();
 
@@ -55,6 +57,7 @@ export default function Register() {
           navigate("/home");
         }
       } catch (error: AxiosError | any) {
+        toast.error(error.response.data.message);
         console.error("Error registering user:", error?.message);
         throw new Error("Failed to register user. Please try again later.");
       }
@@ -145,7 +148,7 @@ export default function Register() {
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link href="/login" variant="body2">
+                <Link href="/" variant="body2">
                   Already have an account? Sign in
                 </Link>
               </Grid>
