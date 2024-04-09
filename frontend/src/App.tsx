@@ -11,17 +11,20 @@ function App() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isUserAuthenticated() && window.location.pathname !== "/register") {
-      navigate("/login");
-    }
+   if (isUserAuthenticated()?.isAuth){
+    navigate('/home')
+   }else{
+    return
+   }
+   
   }, []);
 
   return (
     <main>
       <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/home" element={<Home />} />
+        <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/home" element={<Home />} />
       </Routes>
     </main>
   );

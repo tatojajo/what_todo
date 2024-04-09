@@ -47,7 +47,7 @@ export default function Home({}: Props) {
       };
       const getTodos = async () => {
         const { data } = await axiosInstance(
-          `/todos/${user?.userId}`,
+          `/todos/${user?.user.userId}`,
           userToken
         );
         dispatch(saveTodos(data));

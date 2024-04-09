@@ -59,7 +59,7 @@ export default function Login() {
         console.error("Error login user:", error?.message);
         throw new Error("Failed to login user. Please try again later.");
       }
-      navigate("/Home");
+      navigate("/home");
     },
   });
 
