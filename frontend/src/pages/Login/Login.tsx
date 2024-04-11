@@ -47,7 +47,6 @@ export default function Login() {
     },
     validationSchema,
     onSubmit: async (values: LoginFormData) => {
-      console.log(values);
       try {
         const { data } = await axiosInstance.post("/users/login", values);
         localStorage.setItem("token", data.token);
