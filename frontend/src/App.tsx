@@ -2,7 +2,6 @@ import { Route, Routes, useNavigate } from "react-router-dom";
 
 import "./App.css";
 import Login from "./pages/Login";
-import Register from "./pages/Register";
 import Home from "./pages/Home";
 import { useEffect } from "react";
 import { isUserAuthenticated } from "./helpers/auth";
@@ -22,7 +21,6 @@ function App() {
     <main>
       <Routes>
         <Route path="/" element={<Login />} />
-        <Route path="/register" element={<Register />} />
         <Route path="/home" element={<Home />} />
       </Routes>
     </main>
