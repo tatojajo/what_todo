@@ -4,7 +4,6 @@ import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import Link from "@mui/material/Link";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
@@ -18,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { Snackbar, Alert } from "@mui/material";
 import axiosInstance from "../../helpers/axiosInstance";
 import { AxiosError } from "axios";
+import Register from "../Register";
 
 const theme = createTheme();
 
@@ -37,6 +37,7 @@ const validationSchema = yup.object().shape({
 });
 
 export default function Login() {
+  const [openRegister, setOpenRegister] = useState(false);
   const navigate = useNavigate();
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
 
@@ -150,9 +151,13 @@ export default function Login() {
                   </Link> */}
                 </Grid>
                 <Grid item>
-                  <Link href="/register" variant="body2">
+                  <Button
+                    onClick={() => {
+                      setOpenRegister(true);
+                    }}
+                  >
                     {"Don't have an account? Sign Up"}
-                  </Link>
+                  </Button>
                 </Grid>
               </Grid>
             </Box>
@@ -173,6 +178,7 @@ export default function Login() {
           </Alert>
         </Snackbar>
       </Grid>
+      <Register open={openRegister} setOpen={setOpenRegister} />
     </ThemeProvider>
   );
 }

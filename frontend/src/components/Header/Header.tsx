@@ -12,7 +12,7 @@ import MenuItem from "@mui/material/MenuItem";
 import TaskIcon from "@mui/icons-material/Task";
 import { useNavigate } from "react-router-dom";
 
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
+const settings = ["Logout"];
 
 function Header() {
   const navigate = useNavigate();
