@@ -5,6 +5,12 @@ export const DELETE_TODO = "DELETE_TODO";
 export const EDIT_TODO = "EDIT_TODO";
 export const COMPLETE_TODO = "COMPLETE_TODO";
 export const UNDONE_TODO = "UNDONE_TODO";
+export const ADD_NEW_TODO = "ADD_NEW_TODO";
+
+export const addNewTodo = (todo: Todo) => ({
+  type: ADD_NEW_TODO,
+  todo,
+});
 
 export const saveTodos = (todos: Todo) => ({
   type: SAVE_TODOS,

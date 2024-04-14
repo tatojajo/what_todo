@@ -10,10 +10,8 @@ function App() {
   const navigate = useNavigate();
   useEffect(() => {
     const isAuthenticated = isUserAuthenticated()?.isAuth;
-    const currentPath = window.location.pathname;
-
-    if (isAuthenticated && currentPath !== "/register") {
-      navigate("/home");
+    if (!isAuthenticated) {
+      navigate("/");
     }
   }, []);
 

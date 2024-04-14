@@ -91,11 +91,11 @@ export default function Home({}: Props) {
               justifyContent: "center",
             }}
           >
-            {todos.length === 0 ? (
+            {todos?.length <= 0 ? (
               <div style={{ padding: "20px" }}>You haven't got any todos.</div>
             ) : (
               <List sx={{ width: "90%" }}>
-                {todos.map((todo, index) => {
+                {todos?.map((todo, index) => {
                   return (
                     <Badge
                       key={todo.id}
