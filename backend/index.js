@@ -10,10 +10,11 @@ const cors = require("cors");
 const path = require("path");
 require("dotenv/config");
 
-app.use(express.static(path.join(__dirname, "dist")));
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "dist/index.html"));
-});
+// app.use(express.static(path.join(__dirname, "dist")));
+// app.get("/", (req, res) => {
+//   res.sendFile(path.join(__dirname, "dist/index.html"));
+// });
+
 app.use(cors());
 app.options("*", cors());
 app.use(bodyParser.json());

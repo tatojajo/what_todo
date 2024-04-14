@@ -9,11 +9,15 @@ import { isUserAuthenticated } from "./helpers/auth";
 function App() {
   const navigate = useNavigate();
   useEffect(() => {
+    const token = localStorage.getItem("token");
     const isAuthenticated = isUserAuthenticated()?.isAuth;
     if (!isAuthenticated) {
       navigate("/");
     }
-  }, []);
+    if(token){
+      navigate('/home')
+    }
+  }, [navigate]);
 
   return (
     <main>
