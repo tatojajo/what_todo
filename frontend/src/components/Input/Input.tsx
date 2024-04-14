@@ -1,47 +1,15 @@
 import { useState } from "react";
 import { Divider, IconButton, InputBase, Paper } from "@mui/material";
 import useDebounce from "../../helpers/useDebounce";
-import axiosInstance from "../../helpers/axiosInstance";
-import { isUserAuthenticated } from "../../helpers/auth";
 import AddTaskIcon from "@mui/icons-material/AddTask";
-import toast from "react-hot-toast";
+import { useStore } from "../../store/StoreContext";
+import { addTodo } from "../../helpers/api";
 
 const Input = () => {
   const [value, setValue] = useState("");
   const debounceValue = useDebounce(value, 500);
-  const user = isUserAuthenticated();
-
-  const createNewTodo = async () => {
-    try {
-      if (!user) {
-        console.log("User is not available");
-        return;
-      }
-
-      const token = localStorage.getItem("token");
-      if (!token) {
-        console.log("Authentication token is missing");
-        return;
-      }
-      const userToken = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
-
-      const todo = await axiosInstance.post(
-        `/todos/${user.user.userId}`,
-        { title: debounceValue },
-        userToken
-      );
-      if (todo) {
-        toast.success("Task successfully added!");
-      }
-      window.location.reload();
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const store = useStore();
+  const dispatch = store!.dispatch;
 
   return (
     <Paper
@@ -61,13 +29,17 @@ const Input = () => {
         placeholder="Todo"
         inputProps={{ "aria-label": "Todo" }}
         onChange={(e) => setValue(e.target.value)}
+        value={value}
       />
       <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
       <IconButton
         type="button"
         sx={{ p: "10px" }}
         aria-label="search"
-        onClick={createNewTodo}
+        onClick={() => {
+          setValue("");
+          addTodo(debounceValue, dispatch);
+        }}
       >
         <AddTaskIcon color="success" fontSize="medium" />
       </IconButton>

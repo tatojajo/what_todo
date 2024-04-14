@@ -14,8 +14,8 @@ import { useFormik } from "formik";
 import axiosInstance from "../../helpers/axiosInstance";
 import { AxiosError } from "axios";
 import toast from "react-hot-toast";
-import { Dialog, useMediaQuery, useTheme } from "@mui/material";
-
+import { Dialog, IconButton, useMediaQuery, useTheme } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
 const defaultTheme = createTheme();
 
@@ -94,6 +94,18 @@ export default function Register({ open, setOpen }: Props) {
               alignItems: "center",
             }}
           >
+            <IconButton
+              aria-label="close"
+              onClick={handleClose}
+              sx={{
+                position: "absolute",
+                right: theme.spacing(1),
+                top: theme.spacing(1),
+                color: theme.palette.grey[500],
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
             <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
               <LockOutlinedIcon />
             </Avatar>

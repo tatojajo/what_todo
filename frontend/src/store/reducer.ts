@@ -1,4 +1,5 @@
 import {
+  ADD_NEW_TODO,
   COMPLETE_TODO,
   DELETE_TODO,
   EDIT_TODO,
@@ -27,6 +28,13 @@ export function reducer(state: State, action: any) {
         return todo;
       });
       return { ...state, todos: updatedTodos };
+    }
+    case ADD_NEW_TODO: {
+      const newTodo = action.todo;
+      return {
+        ...state,
+        todos: [newTodo, ...state.todos],
+      };
     }
     case COMPLETE_TODO: {
       const todos = state.todos;

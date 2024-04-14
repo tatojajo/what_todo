@@ -1,8 +1,44 @@
 import { AxiosError } from "axios";
 import axiosInstance from "../helpers/axiosInstance";
 import { Todo } from "../store/StoreContext";
-import { delTodoLocaly, completedTodo, unDoneTodo } from "../store/actions";
+import {
+  delTodoLocaly,
+  completedTodo,
+  unDoneTodo,
+  addNewTodo,
+} from "../store/actions";
 import toast from "react-hot-toast";
+import { isUserAuthenticated } from "./auth";
+
+export const addTodo = async (todo: string, dispatch: any): Promise<void> => {
+  try {
+    const user = isUserAuthenticated()?.user;
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.error("Authentication token is missing");
+      return;
+    }
+
+    const userToken = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const { data } = await axiosInstance.post(
+      `todos/${user?.userId}`,
+      { title: todo },
+      userToken
+    );
+    if (data) {
+      dispatch(addNewTodo(data));
+      toast.success("Todo added successfully!");
+    }
+  } catch (error: AxiosError | any) {
+    console.error("Error adding todo:", error.message);
+    throw new Error("Failed to add todo. Please try again later.");
+  }
+};
 
 export const deleteTodo = async (
   todoId: string,
